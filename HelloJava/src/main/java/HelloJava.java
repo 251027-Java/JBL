@@ -21,5 +21,10 @@ public class HelloJava {
         // control flow
         // if, while, etc
 
+        String str = "sadiosdoifsdoigsjiodg";
+
+        for (int i = 0; i < str.length(); i++) {
+            System.out.println(str.charAt(i));
+        }
     }
 }
