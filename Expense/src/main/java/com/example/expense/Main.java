@@ -1,5 +1,7 @@
 package com.example.expense;
 
+import com.example.expense.repository.IRepository;
+import com.example.expense.repository.TextRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,5 +16,8 @@ public class Main {
         list.add(new Expense(3, LocalDateTime.now(), 10000, "Private Jet"));
 
         System.out.println(list);
+
+        IRepository repo = new TextRepository();
+        repo.saveExpenses(list);
     }
 }
