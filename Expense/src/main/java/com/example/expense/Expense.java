@@ -1,5 +1,6 @@
+package com.example.expense;
+
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class Expense {
 
@@ -17,7 +18,8 @@ public class Expense {
 
     @Override
     public String toString() {
-        return String.format("Expense [id=%d, date=%s, value=%f, merchant=%s]", id, date, value, merchant);
+        return String.format(
+                "com.example.expense.Expense [id=%d, date=%s, value=%f, merchant=%s]", id, date, value, merchant);
     }
 
     public String toCSV() {

@@ -1,0 +1,8 @@
+package com.example.expense.repository;
+
+import com.example.expense.Expense;
+import java.util.List;
+
+public interface IRepository {
+    void saveExpenses(List<Expense> expenses);
+}
