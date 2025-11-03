@@ -1,12 +1,13 @@
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Expense {
     private int id;
-    private Date date;
+    private LocalDateTime date;
     private double value;
     private String merchant;
 
-    public Expense(int id, Date date, double value, String merchant) {
+    public Expense(int id, LocalDateTime date, double value, String merchant) {
         this.id = id;
         this.date = date;
         this.value = value;

@@ -1,4 +1,4 @@
-expenses.txt
+/expenses.*
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
