@@ -1,19 +1,52 @@
 package com.example.expense.repository;
 
 import com.example.expense.Expense;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class TextRepository implements IRepository {
 
     private String filename = "expenses.txt";
 
     @Override
+    public List<Expense> loadExpenses() {
+        List<Expense> ret = new ArrayList<>();
+
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(filename)))) {
+            String line;
+
+            while ((line = in.readLine()) != null) {
+                Pattern pat = Pattern.compile("=([^,\\]]+)");
+                var res = pat.matcher(line);
+                var list = res.results().map(e -> e.group(1)).toList();
+                ret.add(new Expense(
+                        Integer.parseInt(list.get(0)),
+                        LocalDateTime.parse(list.get(1)),
+                        Double.parseDouble(list.get(2)),
+                        list.get(3)));
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ret;
+    }
+
+    @Override
     public void saveExpenses(List<Expense> expenses) {
         try (PrintWriter out = new PrintWriter(new FileWriter(filename))) {
-            out.println(expenses);
+            for (var e : expenses) {
+                out.println(e);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
