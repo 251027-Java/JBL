@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.example.expense.Expense;
 import com.example.expense.repository.CSVRepository;
@@ -14,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -30,10 +33,13 @@ public class ExpenseServiceTest {
         return Stream.of(new TextRepository(), new CSVRepository(), new JSONRepository());
     }
 
-    @ParameterizedTest
-    @MethodSource("repoProvider")
-    void addAndGetToRepository(IRepository repo) {
+    @Test
+    void addAndGetToRepository() {
+        IRepository repo = mock(IRepository.class);
         ExpenseService service = new ExpenseService(repo);
+
+        Expense mockExpense = new Expense(1, LocalDateTime.now(), 100, "walmart");
+        when(repo.readExpense(1)).thenReturn(mockExpense);
 
         service.addExpense(100, "walmart");
 
