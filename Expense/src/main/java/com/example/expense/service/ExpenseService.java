@@ -1,5 +1,6 @@
-package com.example.expense;
+package com.example.expense.service;
 
+import com.example.expense.Expense;
 import com.example.expense.repository.IRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,7 +16,8 @@ public class ExpenseService {
     private IRepository csvRepository;
     private IRepository jsonRepository;
 
-    ExpenseService(IRepository txtRepository, IRepository csvRepository, IRepository jsonRepository) {
+    public ExpenseService(IRepository txtRepository, IRepository csvRepository,
+        IRepository jsonRepository) {
         this.txtRepository = txtRepository;
         this.csvRepository = csvRepository;
         this.jsonRepository = jsonRepository;
@@ -33,24 +35,24 @@ public class ExpenseService {
         return -1;
     }
 
-    Expense addExpense(String fileFormat, double value, String merchant) {
+    public Expense addExpense(String fileFormat, double value, String merchant) {
         IRepository repo = resolveRepository(fileFormat);
         Expense expense = new Expense(generateUniqueID(repo.loadExpenses()), LocalDateTime.now(), value, merchant);
         repo.createExpense(expense);
         return expense;
     }
 
-    void deleteExpense(String fileFormat, int id) {
+    public void deleteExpense(String fileFormat, int id) {
         IRepository repo = resolveRepository(fileFormat);
         repo.deleteExpense(id);
     }
 
-    void updateExpense(String fileFormat, Expense expense) {
+    public void updateExpense(String fileFormat, Expense expense) {
         IRepository repo = resolveRepository(fileFormat);
         repo.updateExpense(expense);
     }
 
-    Expense getExpense(String fileFormat, int id) {
+    public Expense getExpense(String fileFormat, int id) {
         IRepository repo = resolveRepository(fileFormat);
         return repo.readExpense(id);
     }
@@ -63,7 +65,7 @@ public class ExpenseService {
         return null;
     }
 
-    void start() {
+    public void start() {
         Scanner in = new Scanner(System.in);
 
         boolean done = false;
