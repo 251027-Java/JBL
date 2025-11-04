@@ -12,15 +12,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ExpenseService {
-    private IRepository txtRepository;
-    private IRepository csvRepository;
-    private IRepository jsonRepository;
+    private IRepository repository;
 
-    public ExpenseService(IRepository txtRepository, IRepository csvRepository,
-        IRepository jsonRepository) {
-        this.txtRepository = txtRepository;
-        this.csvRepository = csvRepository;
-        this.jsonRepository = jsonRepository;
+    public ExpenseService(IRepository repository) {
+        this.repository = repository;
     }
 
     private int generateUniqueID(List<Expense> expenseList) {
@@ -35,34 +30,23 @@ public class ExpenseService {
         return -1;
     }
 
-    public Expense addExpense(String fileFormat, double value, String merchant) {
-        IRepository repo = resolveRepository(fileFormat);
-        Expense expense = new Expense(generateUniqueID(repo.loadExpenses()), LocalDateTime.now(), value, merchant);
-        repo.createExpense(expense);
+    public Expense addExpense(double value, String merchant) {
+        Expense expense =
+                new Expense(generateUniqueID(repository.loadExpenses()), LocalDateTime.now(), value, merchant);
+        repository.createExpense(expense);
         return expense;
     }
 
-    public void deleteExpense(String fileFormat, int id) {
-        IRepository repo = resolveRepository(fileFormat);
-        repo.deleteExpense(id);
+    public void deleteExpense(int id) {
+        repository.deleteExpense(id);
     }
 
-    public void updateExpense(String fileFormat, Expense expense) {
-        IRepository repo = resolveRepository(fileFormat);
-        repo.updateExpense(expense);
+    public void updateExpense(Expense expense) {
+        repository.updateExpense(expense);
     }
 
-    public Expense getExpense(String fileFormat, int id) {
-        IRepository repo = resolveRepository(fileFormat);
-        return repo.readExpense(id);
-    }
-
-    private IRepository resolveRepository(String fileFormat) {
-        if (fileFormat.equalsIgnoreCase("txt")) return txtRepository;
-        if (fileFormat.equalsIgnoreCase("csv")) return csvRepository;
-        if (fileFormat.equalsIgnoreCase("json")) return jsonRepository;
-
-        return null;
+    public Expense getExpense(int id) {
+        return repository.readExpense(id);
     }
 
     public void start() {
@@ -80,14 +64,12 @@ public class ExpenseService {
 
     private void displayActions() {
         String res = """
-            <txt|csv|json> <action> to perform an action on a specific file format
-            <quit|exit> to exit the program
-
-            <txt|csv|json> list
-            <txt|csv|json> view <id>
-            <txt|csv|json> add <value> <merchant>
-            <txt|csv|json> update <id> <date|value|merchant> <new_value>
-            <txt|csv|json> delete <id>
+            quit|exit to exit the program
+            list
+            view <id>
+            add <value> <merchant>
+            update <id> <date|value|merchant> <new_value>
+            delete <id>
             """;
         System.out.println(res);
     }
@@ -101,16 +83,16 @@ public class ExpenseService {
             return false;
         }
 
-        if (command.length == 0 || command.length == 1) {
+        if (command.length == 0) {
             return true;
         }
 
-        switch (command[1]) {
+        switch (command[0]) {
             case "list" -> {
-                listExpenses(command[0]);
+                listExpenses();
             }
             case "view" -> {
-                viewExpense(command[0], command[2]);
+                viewExpense(command[1]);
             }
             default -> {}
         }
@@ -126,32 +108,18 @@ public class ExpenseService {
         System.out.printf("Invalid value provided for '%s': %s\n", name, value);
     }
 
-    private void listExpenses(String fileFormat) {
-        IRepository repo = resolveRepository(fileFormat);
-
-        if (repo == null) {
-            unsupportedFileFormat(fileFormat);
-            return;
-        }
-
-        for (var e : repo.loadExpenses()) {
+    private void listExpenses() {
+        for (var e : repository.loadExpenses()) {
             System.out.println(e);
         }
 
         System.out.println();
     }
 
-    private void viewExpense(String fileFormat, String id) {
-        IRepository repo = resolveRepository(fileFormat);
-
-        if (repo == null) {
-            unsupportedFileFormat(fileFormat);
-            return;
-        }
-
+    private void viewExpense(String id) {
         try {
             int valId = Integer.parseInt(id);
-            System.out.println(getExpense(fileFormat, valId));
+            System.out.println(getExpense(valId));
         } catch (Exception e) {
             invalidValue("id", id);
         }
