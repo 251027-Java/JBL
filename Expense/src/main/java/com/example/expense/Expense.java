@@ -20,6 +20,10 @@ public class Expense {
     return id;
   }
 
+  public double getValue() {
+        return value;
+  }
+
   @Override
     public String toString() {
         return String.format(

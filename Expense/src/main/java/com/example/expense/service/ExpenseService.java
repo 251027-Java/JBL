@@ -49,6 +49,10 @@ public class ExpenseService {
         return repository.readExpense(id);
     }
 
+    public double sumExpenses() {
+        return repository.loadExpenses().stream().mapToDouble(Expense::getValue).sum();
+    }
+
     public void start() {
         Scanner in = new Scanner(System.in);
 
