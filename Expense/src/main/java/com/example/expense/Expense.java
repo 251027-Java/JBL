@@ -16,15 +16,15 @@ public class Expense {
         this.merchant = merchant;
     }
 
-  public int getId() {
-    return id;
-  }
+    public int getId() {
+        return id;
+    }
 
-  public double getValue() {
+    public double getValue() {
         return value;
-  }
+    }
 
-  @Override
+    @Override
     public String toString() {
         return String.format(
                 "com.example.expense.Expense [id=%d, date=%s, value=%f, merchant=%s]", id, date, value, merchant);
