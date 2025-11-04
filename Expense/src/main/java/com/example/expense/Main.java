@@ -1,7 +1,7 @@
 package com.example.expense;
 
 import com.example.expense.repository.IRepository;
-import com.example.expense.repository.TextRepository;
+import com.example.expense.repository.JSONRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 public class Main {
 
     static void main() {
-        IRepository repo = new TextRepository();
+        IRepository repo = new JSONRepository();
 
         var list2 = repo.loadExpenses();
         System.out.println("Loaded list");

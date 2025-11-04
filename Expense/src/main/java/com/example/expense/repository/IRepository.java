@@ -4,13 +4,27 @@ import com.example.expense.Expense;
 import java.util.List;
 
 public interface IRepository {
-    void createExpense(Expense expense);
+    default void createExpense(Expense expense) {
+        var arr = loadExpenses();
+        arr.add(expense);
+        saveExpenses(arr);
+    }
 
-    Expense readExpense(int id);
+    default Expense readExpense(int id) {
+        return loadExpenses().stream().filter(e -> e.getId() == id).findFirst().orElse(null);
+    }
 
-    void updateExpense(Expense expense);
+    default void updateExpense(Expense expense) {
+        var arr = loadExpenses().stream()
+                .map(e -> e.getId() == expense.getId() ? expense : e)
+                .toList();
+        saveExpenses(arr);
+    }
 
-    void deleteExpense(int id);
+    default void deleteExpense(int id) {
+        var arr = loadExpenses().stream().filter(e -> e.getId() != id).toList();
+        saveExpenses(arr);
+    }
 
     List<Expense> loadExpenses();
 

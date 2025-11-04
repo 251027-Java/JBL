@@ -15,27 +15,7 @@ public class CSVRepository implements IRepository {
 
     private String filename = "expenses.csv";
 
-  @Override
-  public void createExpense(Expense expense) {
-
-  }
-
-  @Override
-  public Expense readExpense(int id) {
-    return null;
-  }
-
-  @Override
-  public void updateExpense(Expense expense) {
-
-  }
-
-  @Override
-  public void deleteExpense(int id) {
-
-  }
-
-  @Override
+    @Override
     public List<Expense> loadExpenses() {
         List<Expense> ret = new ArrayList<>();
 
