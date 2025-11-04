@@ -24,7 +24,27 @@ public class JSONRepository implements IRepository {
             .setPrettyPrinting()
             .create();
 
-    @Override
+  @Override
+  public void createExpense(Expense expense) {
+
+  }
+
+  @Override
+  public Expense readExpense(int id) {
+    return null;
+  }
+
+  @Override
+  public void updateExpense(Expense expense) {
+
+  }
+
+  @Override
+  public void deleteExpense(int id) {
+
+  }
+
+  @Override
     public List<Expense> loadExpenses() {
         try (FileReader in = new FileReader(filename)) {
             return gson.fromJson(in, new TypeToken<>() {});
