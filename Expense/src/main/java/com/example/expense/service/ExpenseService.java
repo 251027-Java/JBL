@@ -18,6 +18,28 @@ public class ExpenseService {
         this.repository = repository;
     }
 
+    private static String[] parseArgs(String commandLine) {
+        if (commandLine == null || commandLine.trim().isEmpty()) {
+            return new String[0];
+        }
+
+        List<String> args = new ArrayList<>();
+        Pattern pattern = Pattern.compile("\"([^\"]*)\"|'([^']*)'|(\\S+)");
+        Matcher matcher = pattern.matcher(commandLine);
+
+        while (matcher.find()) {
+            if (matcher.group(1) != null) {
+                args.add(matcher.group(1));
+            } else if (matcher.group(2) != null) {
+                args.add(matcher.group(2));
+            } else {
+                args.add(matcher.group(3));
+            }
+        }
+
+        return args.toArray(new String[0]);
+    }
+
     private int generateUniqueID(List<Expense> expenseList) {
         Set<Integer> set = expenseList.stream().map(Expense::getId).collect(Collectors.toSet());
 
@@ -37,8 +59,10 @@ public class ExpenseService {
         return expense;
     }
 
-    public void deleteExpense(int id) {
+    public Expense deleteExpense(int id) {
+        Expense expense = getExpense(id);
         repository.deleteExpense(id);
+        return expense;
     }
 
     public void updateExpense(Expense expense) {
@@ -127,27 +151,5 @@ public class ExpenseService {
         } catch (Exception e) {
             invalidValue("id", id);
         }
-    }
-
-    private static String[] parseArgs(String commandLine) {
-        if (commandLine == null || commandLine.trim().isEmpty()) {
-            return new String[0];
-        }
-
-        List<String> args = new ArrayList<>();
-        Pattern pattern = Pattern.compile("\"([^\"]*)\"|'([^']*)'|(\\S+)");
-        Matcher matcher = pattern.matcher(commandLine);
-
-        while (matcher.find()) {
-            if (matcher.group(1) != null) {
-                args.add(matcher.group(1));
-            } else if (matcher.group(2) != null) {
-                args.add(matcher.group(2));
-            } else {
-                args.add(matcher.group(3));
-            }
-        }
-
-        return args.toArray(new String[0]);
     }
 }

@@ -1,145 +1,127 @@
 package com.example.expense.service;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.expense.Expense;
-import com.example.expense.repository.CSVRepository;
 import com.example.expense.repository.IRepository;
-import com.example.expense.repository.JSONRepository;
-import com.example.expense.repository.TextRepository;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 
 public class ExpenseServiceTest {
+    private ExpenseService service;
+    private IRepository repository;
 
     @BeforeEach
-    void clearRepositories() {
-        new TextRepository().saveExpenses(List.of());
-        new CSVRepository().saveExpenses(List.of());
-        new JSONRepository().saveExpenses(List.of());
-    }
-
-    static Stream<IRepository> repoProvider() {
-        return Stream.of(new TextRepository(), new CSVRepository(), new JSONRepository());
+    void setUp() {
+        repository = mock(IRepository.class);
+        service = new ExpenseService(repository);
     }
 
     @Test
-    void addAndGetToRepository() {
-        IRepository repo = mock(IRepository.class);
-        ExpenseService service = new ExpenseService(repo);
+    void addExpense() {
+        Expense addedExpense = service.addExpense(100, "walmart");
 
-        Expense mockExpense = new Expense(1, LocalDateTime.now(), 100, "walmart");
-        when(repo.readExpense(1)).thenReturn(mockExpense);
-
-        service.addExpense(100, "walmart");
-
-        var expense = service.getExpense(1);
-        assertEquals(1, expense.getId());
-        assertEquals(100, expense.getValue());
+        assertNotNull(addedExpense);
+        assertEquals(1, addedExpense.getId());
+        assertEquals(100, addedExpense.getValue());
     }
 
-    @ParameterizedTest
-    @MethodSource("repoProvider")
-    void addAndGetMultipleToRepository(IRepository repo) {
-        ExpenseService service = new ExpenseService(repo);
+    @Test
+    void addMultipleExpenses() {
+        Expense e1 = service.addExpense(100, "walmart");
 
-        service.addExpense(100, "walmart");
-        service.addExpense(12, "costco");
+        when(repository.loadExpenses()).thenReturn(List.of(e1));
+        Expense e2 = service.addExpense(12, "costco");
 
-        var e1 = service.getExpense(1);
+        assertNotNull(e1);
         assertEquals(1, e1.getId());
         assertEquals(100, e1.getValue());
 
-        var e2 = service.getExpense(2);
+        assertNotNull(e2);
         assertEquals(2, e2.getId());
         assertEquals(12, e2.getValue());
     }
 
-    @ParameterizedTest
-    @MethodSource("repoProvider")
-    void getNonexistantFromRepository(IRepository repo) {
-        ExpenseService service = new ExpenseService(repo);
+    @Test
+    void getExpense() {
+        Expense mockExpense = new Expense(1, LocalDateTime.now(), 123, "walmart");
+        when(repository.readExpense(1)).thenReturn(mockExpense);
         var e1 = service.getExpense(1);
-        assertNull(e1);
-    }
 
-    @ParameterizedTest
-    @MethodSource("repoProvider")
-    void deleteFromRepository(IRepository repo) {
-        ExpenseService service = new ExpenseService(repo);
-
-        service.addExpense(100, "walmart");
-        service.deleteExpense(1);
-
-        var e1 = service.getExpense(1);
-        assertNull(e1);
-    }
-
-    @ParameterizedTest
-    @MethodSource("repoProvider")
-    void deleteNonexistantFromRepository(IRepository repo) {
-        ExpenseService service = new ExpenseService(repo);
-
-        assertDoesNotThrow(() -> {
-            service.deleteExpense(1);
-        });
-    }
-
-    @ParameterizedTest
-    @MethodSource("repoProvider")
-    void updateRepository(IRepository repo) {
-        ExpenseService service = new ExpenseService(repo);
-        service.addExpense(100, "walmart");
-
-        service.updateExpense(new Expense(1, LocalDateTime.now(), 95, "walmart"));
-
-        var e1 = service.getExpense(1);
         assertNotNull(e1);
         assertEquals(1, e1.getId());
-        assertEquals(95, e1.getValue());
+        assertEquals(123, e1.getValue());
     }
 
-    @ParameterizedTest
-    @MethodSource("repoProvider")
-    void updateNonexistantInRepository(IRepository repo) {
-        ExpenseService service = new ExpenseService(repo);
-
-        assertDoesNotThrow(() -> {
-            service.updateExpense(new Expense(1, LocalDateTime.now(), 95, "walmart"));
-        });
-
+    @Test
+    void getNonexistantExpense() {
         var e1 = service.getExpense(1);
+
         assertNull(e1);
     }
 
-    @ParameterizedTest
-    @MethodSource("repoProvider")
-    void calcSumsFromRepository(IRepository repo) {
-        ExpenseService service = new ExpenseService(repo);
+    @Test
+    void deleteExpense() {
+        Expense mockExpense = new Expense(1, LocalDateTime.now(), 100, "walmart");
+        when(repository.readExpense(1)).thenReturn(mockExpense);
 
-        service.addExpense(100, "walmart");
-        service.addExpense(10, "walmart");
-
-        var sum = service.sumExpenses();
-        assertEquals(110, sum);
+        var e1 = service.deleteExpense(1);
+        assertNotNull(e1);
+        assertEquals(1, e1.getId());
+        assertEquals(100, e1.getValue());
     }
 
-    @ParameterizedTest
-    @MethodSource("repoProvider")
-    void calcZeroSumsFromRepository(IRepository repo) {
-        ExpenseService service = new ExpenseService(repo);
+    @Test
+    void deleteNonexistantExpense() {
+        when(repository.readExpense(1)).thenReturn(null);
+
+        var e1 = service.deleteExpense(1);
+        assertNull(e1);
+    }
+
+    @Test
+    void updateExpense() {
+        var e1 = new Expense(1, LocalDateTime.now(), 123, "walmart");
+        service.updateExpense(e1);
+
+        verify(repository, times(1)).updateExpense(e1);
+    }
+
+    @Test
+    void sumExpenses() {
+        when(repository.loadExpenses())
+                .thenReturn(List.of(
+                        new Expense(1, LocalDateTime.now(), 1, "costco"),
+                        new Expense(1, LocalDateTime.now(), 2.5, "costco")));
 
         var sum = service.sumExpenses();
+
+        assertEquals(3.5, sum);
+    }
+
+    @Test
+    void sumZeroExpenses() {
+        when(repository.loadExpenses()).thenReturn(List.of());
+
+        var sum = service.sumExpenses();
+
         assertEquals(0, sum);
+    }
+
+    @Test
+    void sumSingleExpense() {
+        when(repository.loadExpenses()).thenReturn(List.of(new Expense(1, LocalDateTime.now(), 5, "walmart")));
+
+        var sum = service.sumExpenses();
+
+        assertEquals(5, sum);
     }
 }
