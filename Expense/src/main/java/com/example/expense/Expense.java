@@ -27,7 +27,7 @@ public class Expense {
     @Override
     public String toString() {
         return String.format(
-                "com.example.expense.Expense [id=%d, date=%s, value=%f, merchant=%s]", id, date, value, merchant);
+                "%s [id=%d, date=%s, value=%f, merchant=%s]", getClass().getName(), id, date, value, merchant);
     }
 
     public String toCSV() {
