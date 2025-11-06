@@ -69,3 +69,6 @@ VALUES
   (3, 1),
   (4, 5),
   (3, 2);
+
+ALTER TABLE workplace
+RENAME TO employee_department_association;
