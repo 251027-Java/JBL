@@ -21,14 +21,34 @@ Explanation"
 
 import java.util.*;
 
-public class numberproducts {
+public class numprod {
     static void main() {
-        new numberproducts().run();
+        new numprod().run();
     }
 
     void run() {
         Scanner sc = new Scanner(System.in);
 
+        int n = sc.nextInt();
+        HashSet<Integer> nums = new HashSet<>();
+
+        for (int i = 0; i < n; i++) {
+            nums.add(sc.nextInt());
+        }
+
+        int oddProd = 1;
+        int evenProd = 1;
+
+        for (int e : nums) {
+            if (e % 2 == 0) {
+                evenProd *= e;
+            } else {
+                oddProd *= e;
+            }
+        }
+
+        int res = Math.abs(evenProd - oddProd);
+        System.out.println(res);
 
         sc.close();
     }

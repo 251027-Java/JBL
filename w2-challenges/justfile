@@ -1,3 +1,4 @@
 compile:
-    javac isbns.java
+    javac isbns.java numprod.java
+
 
