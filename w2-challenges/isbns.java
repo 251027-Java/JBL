@@ -39,7 +39,7 @@ Sample Output 2:
 import java.util.*;
 
 public class isbns {
-    public static void main(String[] args) {
+    static void main() {
         new isbns().run();
     }
 
