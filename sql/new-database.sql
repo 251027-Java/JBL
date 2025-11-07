@@ -26,3 +26,61 @@ DROP CONSTRAINT fk_new_table_id;
 
 ALTER TABLE another_table
 ADD CONSTRAINT fk_new_table_id FOREIGN key (new_table_id) REFERENCES my_new_table (id);
+
+INSERT INTO
+  my_new_table (
+    id,
+    email,
+    salary,
+    second_salary,
+    third_salary,
+    fourth_salary
+  )
+VALUES
+  (
+    1,
+    'asd@email.com',
+    234,
+    834.345,
+    1000.434,
+    1000.43
+  ),
+  (
+    2,
+    'asd@email.com',
+    234,
+    834.345,
+    1000.434,
+    1000.43
+  ),
+  (
+    3,
+    'asd@email.com',
+    234,
+    834.345,
+    1000.434,
+    1000.43
+  ),
+  (
+    4,
+    'asd@email.com',
+    234,
+    834.345,
+    1000.434,
+    1000.43
+  ),
+  (
+    5,
+    'asd@email.com',
+    234,
+    834.345,
+    1000.434,
+    1000.43
+  )
+ON CONFLICT DO NOTHING;
+
+INSERT INTO
+  another_table (id, name, new_table_id)
+VALUES
+  (6, 'frank', 7)
+ON CONFLICT DO NOTHING;
