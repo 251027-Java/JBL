@@ -3,7 +3,6 @@ package com.example.expense.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,18 +11,19 @@ import com.example.expense.Expense;
 import com.example.expense.repository.IRepository;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class ExpenseServiceTest {
-    private ExpenseService service;
+    @Mock
     private IRepository repository;
 
-    @BeforeEach
-    void setUp() {
-        repository = mock(IRepository.class);
-        service = new ExpenseService(repository);
-    }
+    @InjectMocks
+    private ExpenseService service;
 
     @Test
     void addExpense() {
