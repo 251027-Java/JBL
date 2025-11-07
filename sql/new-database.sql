@@ -1,4 +1,4 @@
-CREATE DATABASE mySambleDb;
+CREATE DATABASE mysambledb;
 
 CREATE SCHEMA mysampleschema;
 
@@ -25,7 +25,7 @@ ALTER TABLE another_table
 DROP CONSTRAINT fk_new_table_id;
 
 ALTER TABLE another_table
-ADD CONSTRAINT fk_new_table_id FOREIGN key (new_table_id) REFERENCES my_new_table (id);
+ADD CONSTRAINT fk_new_table_id FOREIGN KEY (new_table_id) REFERENCES my_new_table (id);
 
 INSERT INTO
   my_new_table (
@@ -82,5 +82,21 @@ ON CONFLICT DO NOTHING;
 INSERT INTO
   another_table (id, name, new_table_id)
 VALUES
-  (6, 'frank', 7)
+  (1, 'james', 4),
+  (2, 'emily', 1),
+  (3, 'john', 3),
+  (4, 'peter', 4),
+  (5, 'sarah', 2),
+  (6, 'mary', 5),
+  (7, 'patricia', 2)
 ON CONFLICT DO NOTHING;
+
+INSERT INTO
+  another_table (id, name, new_table_id)
+VALUES
+  (10, 'frank', 8)
+ON CONFLICT DO NOTHING;
+
+DELETE FROM my_new_table
+WHERE
+  my_new_table.id = 4;
