@@ -27,7 +27,8 @@ public class JSONRepository implements IRepository {
     @Override
     public List<Expense> loadExpenses() {
         try (FileReader in = new FileReader(filename)) {
-            return gson.fromJson(in, new TypeToken<>() {});
+            List<Expense> ret = gson.fromJson(in, new TypeToken<>() {});
+            return ret == null ? List.of() : ret;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
