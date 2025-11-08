@@ -44,7 +44,7 @@ public class strbal {
     void run() {
         Scanner sc = new Scanner(System.in);
 
-        int n = sc.nextInt();
+        sc.nextInt();
         String s = sc.next();
 
         int[] count = new int[26];
@@ -56,9 +56,13 @@ public class strbal {
 
         ArrayList<Character> arr = new ArrayList<>();
 
-        for (int i = 0; i < count.length; i++) {
-            if (count[i] % 2 == 1) {
-                arr.add((char) ('a' + i));
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            int index = c - 'a';
+
+            if (count[index] % 2 == 1) {
+                count[index]++;
+                arr.add(c);
             }
         }
 
