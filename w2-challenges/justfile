@@ -1,4 +1,4 @@
 compile:
-    javac isbns.java numprod.java signal.java
+    javac isbns.java numprod.java signal.java strbal.java
 
 
