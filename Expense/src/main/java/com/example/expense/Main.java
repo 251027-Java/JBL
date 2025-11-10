@@ -1,12 +1,13 @@
 package com.example.expense;
 
-import com.example.expense.repository.JSONRepository;
+import com.example.expense.repository.IRepository;
+import com.example.expense.repository.PostgreSQLRepository;
 import com.example.expense.service.ExpenseService;
 
 public class Main {
 
     static void main() {
-        ExpenseService service = new ExpenseService(new JSONRepository());
-        service.start();
+        IRepository repo = new PostgreSQLRepository();
+        ExpenseService service = new ExpenseService(repo);
     }
 }

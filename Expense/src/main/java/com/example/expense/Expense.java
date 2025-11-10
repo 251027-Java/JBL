@@ -24,7 +24,15 @@ public class Expense {
         return value;
     }
 
-    @Override
+  public LocalDateTime getDate() {
+    return date;
+  }
+
+  public String getMerchant() {
+        return merchant;
+  }
+
+  @Override
     public String toString() {
         return String.format(
                 "%s [id=%d, date=%s, value=%f, merchant=%s]", getClass().getName(), id, date, value, merchant);
