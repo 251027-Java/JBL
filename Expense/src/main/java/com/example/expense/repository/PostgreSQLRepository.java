@@ -9,19 +9,20 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class H2Repository implements IRepository {
+public class PostgreSQLRepository implements IRepository {
 
-    private static final String H2_URL = "jdbc:h2:mem:expenses;DB_CLOSE_DELAY=-1";
+    private static final String url = "jdbc:postgresql://localhost:5432/expensedb";
+    private static final String user = "postgres";
+    private static final String password = "mysecretpassword";
+
     private Connection connection;
 
-    public H2Repository() {
+    public PostgreSQLRepository() {
         try {
-            connection = DriverManager.getConnection(H2_URL);
+            connection = DriverManager.getConnection(url, user, password);
 
             try (var st = connection.createStatement()) {
                 st.execute("""
-                    CREATE SCHEMA IF NOT EXISTS expense_report;
-
                     CREATE TABLE IF NOT EXISTS expenses (
                       id INT PRIMARY KEY,
                       date TIMESTAMP NOT NULL,
@@ -31,7 +32,7 @@ public class H2Repository implements IRepository {
                     """);
             }
 
-            System.out.println("Made H2 database");
+            System.out.println("Made PostgreSQL database");
         } catch (SQLException e) {
             e.printStackTrace();
         }
