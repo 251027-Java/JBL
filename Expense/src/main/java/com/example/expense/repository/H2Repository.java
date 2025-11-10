@@ -47,6 +47,8 @@ public class H2Repository implements IRepository {
             st.setTimestamp(2, Timestamp.valueOf(expense.getDate()));
             st.setDouble(3, expense.getValue());
             st.setString(4, expense.getMerchant());
+
+            st.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -59,9 +61,13 @@ public class H2Repository implements IRepository {
 
             var res = st.executeQuery();
 
-            LocalDateTime date = res.getTimestamp(1).toLocalDateTime();
-            double price = res.getDouble(2);
-            String merchant = res.getString(3);
+            if (!res.next()) {
+                return null;
+            }
+
+            LocalDateTime date = res.getTimestamp("date").toLocalDateTime();
+            double price = res.getDouble("price");
+            String merchant = res.getString("merchant");
 
             return new Expense(id, date, price, merchant);
         } catch (SQLException e) {
@@ -85,7 +91,7 @@ public class H2Repository implements IRepository {
             st.setString(2, expense.getMerchant());
             st.setInt(3, expense.getId());
 
-            st.execute();
+            st.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -100,7 +106,7 @@ public class H2Repository implements IRepository {
             """)) {
             statement.setInt(1, id);
 
-            statement.execute();
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
