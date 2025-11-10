@@ -4,6 +4,7 @@ import com.example.expense.Expense;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class H2Repository implements IRepository {
@@ -13,8 +14,6 @@ public class H2Repository implements IRepository {
 
     public H2Repository() {
         try {
-            Class.forName("org.h2.Driver");
-
             connection = DriverManager.getConnection(H2_URL);
 
             String sql = """
@@ -23,12 +22,12 @@ public class H2Repository implements IRepository {
                 CREATE TABLE IF NOT EXISTS ExpenseReport.Expenses (
                   id INT PRIMARY KEY,
                   date TIMESTAMP NOT NULL,
-                  value FLOAT CHECK (value > 0),
+                  price DOUBLE CHECK (price > 0),
                   merchant VARCHAR(50) NOT NULL
                 );
                 """;
 
-            connection.createStatement().executeQuery(sql);
+            connection.createStatement().execute(sql);
 
             System.out.println("Made H2 database");
         } catch (SQLException e) {
@@ -38,7 +37,17 @@ public class H2Repository implements IRepository {
 
     @Override
     public void createExpense(Expense expense) {
-        IRepository.super.createExpense(expense);
+        try {
+            var s = connection.prepareStatement("""
+                INSERT INTO Expenses (id, date, price, merchant) VALUES (?, ?, ?, ?);
+                """);
+            s.setInt(1, expense.getId());
+            s.setTimestamp(2, Timestamp.valueOf(expense.getDate()));
+            s.setDouble(3, expense.getValue());
+            s.setString(4, expense.getMerchant());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
