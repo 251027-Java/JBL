@@ -63,7 +63,7 @@ public class isbns {
 
     int solve1(int[] isbns, int target) {
         for (int i = 0; i < isbns.length; i++) {
-            if (isbns[0] >= target) {
+            if (isbns[i] >= target) {
                 return i;
             }
         }
