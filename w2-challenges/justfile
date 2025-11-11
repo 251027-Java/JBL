@@ -1,4 +1,5 @@
 compile:
     javac isbns.java numprod.java signal.java strbal.java survey.java wcount.java
 
-
+clean:
+    rm *.class
