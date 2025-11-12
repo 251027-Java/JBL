@@ -56,8 +56,7 @@ public class MongoRepository implements IRepository {
 
     @Override
     public Expense readExpense(int id) {
-        var doc = collection.find(Filters.eq("_id", id)).first();
-        return toExpense(doc);
+        return toExpense(collection.find(Filters.eq("_id", id)).first());
     }
 
     @Override
