@@ -1,14 +1,16 @@
 package com.example.expense.repository;
 
 import com.example.expense.Expense;
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import org.bson.Document;
 
 public class MongoRepository implements IRepository {
@@ -21,44 +23,62 @@ public class MongoRepository implements IRepository {
     private final String uri = String.format("mongodb://%s:%s@%s:%d", user, password, hostname, port);
 
     private MongoClient client;
-    private MongoDatabase db;
-    private MongoCollection collection ;
+    private final MongoCollection<Document> collection;
 
     public MongoRepository() {
-      System.out.println(uri);
-        client = MongoClients.create(MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString(uri))
-                .applyToSocketSettings(builder -> builder.connectTimeout(5L, TimeUnit.SECONDS))
-                .build());
-
-        db = client.getDatabase("expensesdb");
+        client = MongoClients.create(uri);
+        MongoDatabase db = client.getDatabase("expensesdb");
         collection = db.getCollection("expense");
+    }
+
+    private static Document toDocument(Expense e) {
+        if (e == null) return null;
+
+        return new Document("_id", e.getId())
+                .append("date", e.getDate())
+                .append("value", e.getValue())
+                .append("merchant", e.getMerchant());
+    }
+
+    private static Expense toExpense(Document e) {
+        if (e == null) return null;
+
+        return new Expense(
+                e.getInteger("_id"),
+                e.getDate("date").toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+                e.getDouble("value"),
+                e.getString("merchant"));
     }
 
     @Override
     public void createExpense(Expense expense) {
-//      collection.insertOne(new Document("id",expense.getId()).append("date",expense.getDate().toString()).append(""))
-        IRepository.super.createExpense(expense);
+        collection.insertOne(toDocument(expense));
     }
 
     @Override
     public Expense readExpense(int id) {
-        return IRepository.super.readExpense(id);
+        var doc = collection.find(Filters.eq("_id", id)).first();
+        return toExpense(doc);
     }
 
     @Override
     public void updateExpense(Expense expense) {
-        IRepository.super.updateExpense(expense);
+        collection.updateOne(
+                Filters.eq("_id", expense.getId()),
+                Updates.combine(
+                        Updates.set("date", expense.getDate()),
+                        Updates.set("value", expense.getValue()),
+                        Updates.set("merchant", expense.getMerchant())));
     }
 
     @Override
     public void deleteExpense(int id) {
-        IRepository.super.deleteExpense(id);
+        collection.deleteOne(Filters.eq("_id", id));
     }
 
     @Override
     public List<Expense> loadExpenses() {
-        return List.of();
+        return collection.find().map(MongoRepository::toExpense).into(new ArrayList<>());
     }
 
     @Override
