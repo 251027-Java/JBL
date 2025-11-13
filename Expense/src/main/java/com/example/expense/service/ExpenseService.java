@@ -12,6 +12,7 @@ public class ExpenseService {
 
     public ExpenseService(IRepository repository) {
         this.repository = repository;
+        seed();
     }
 
     private int generateUniqueID(List<Expense> expenseList) {
@@ -49,5 +50,20 @@ public class ExpenseService {
 
     public double sumExpenses() {
         return repository.loadExpenses().stream().mapToDouble(Expense::getValue).sum();
+    }
+
+    public void printExpenses() {
+        repository.loadExpenses().forEach(System.out::println);
+    }
+
+    private void seed() {
+        List<Expense> expenses = repository.loadExpenses();
+
+        if (expenses.isEmpty()) {
+            this.addExpense(100, "walmart");
+            this.addExpense(53, "costco");
+            this.addExpense(85, "heb");
+            this.addExpense(20, "domino's pizza");
+        }
     }
 }
