@@ -6,6 +6,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -66,7 +67,8 @@ public class MongoRepository implements IRepository {
                 Updates.combine(
                         Updates.set("date", expense.getDate()),
                         Updates.set("value", expense.getValue()),
-                        Updates.set("merchant", expense.getMerchant())));
+                        Updates.set("merchant", expense.getMerchant())),
+                new UpdateOptions().upsert(true));
     }
 
     @Override
@@ -80,5 +82,7 @@ public class MongoRepository implements IRepository {
     }
 
     @Override
-    public void saveExpenses(List<Expense> expenses) {}
+    public void saveExpenses(List<Expense> expenses) {
+        expenses.forEach(this::updateExpense);
+    }
 }
