@@ -1,0 +1,28 @@
+div {
+    border: 1px solid black;
+    max-width: 75%;
+    margin: auto;
+    margin-top: 5%;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+h2 {
+    text-align: center;
+}
+
+button {
+    align-self: center;
+    background-color: #dd9797;
+    border: none;
+    border-radius: 4px;
+    padding: .5rem;
+}
+
+div p {
+    border: 1px solid black;
+    padding: 1rem;
+    margin: 0;
+}

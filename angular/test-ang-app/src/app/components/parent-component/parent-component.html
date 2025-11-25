@@ -1,0 +1,48 @@
+<p>hello from parent component</p>
+
+<p>
+    look at my children:
+</p>
+
+<div>
+    <!-- deprecated, need to import in order to use -->
+    <!-- <p *ngFor="let num of arr; index as i">im a child {{i}}</p> -->
+
+    <!-- new, a part of core, no import needed -->
+    <!-- @for (num of arr; track num) {
+    <p>other im a child {{num}}</p>
+    } -->
+
+    @for (num of arr; track num) {
+    <app-child-component [index]="num"></app-child-component>
+    }
+</div>
+
+<!-- 
+<p *ngIf="arr.length > 4; then thenBlock else elseBlock"></p>
+<ng-template #thenBlock>i have many children</ng-template>
+<ng-template #elseBlock>other thing</ng-template> -->
+
+<!-- 
+<p *ngIf="arr.length > 4; else elseBlock">i have so many children</p>
+<ng-template #elseBlock>other thing</ng-template> -->
+
+<p>
+    @if (arr.length > 4) {
+    i have so many children
+    } @else {
+    what is this
+    }
+</p>
+
+<button (click)="showSurprise()">click for surprise</button>
+
+<h1 [hidden]='hideElement'>now im visible</h1>
+
+<h3>wait a minute.. who are you</h3>
+
+<input type="text" [(ngModel)]="nameInput">
+
+@if (nameInput) {
+<p>nice to meet you {{nameInput}}</p>
+}

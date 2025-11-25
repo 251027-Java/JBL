@@ -1,0 +1,13 @@
+<p>translations done: {{translatorService.translationCounter}}</p>
+
+<div>
+    <h2>english to pig latin translator</h2>
+
+    <label for="user-entry">enter your english text</label>
+    <textarea name="user-entry" id="user-entry" rows="5" [(ngModel)]="englistText"></textarea>
+    <button (click)="translate()">translate</button>
+
+    @if (pigLatinText) {
+    <p>{{pigLatinText}}</p>
+    }
+</div>
