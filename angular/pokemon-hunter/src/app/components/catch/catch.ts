@@ -27,8 +27,6 @@ export class Catch {
 
 		if (pokemon) {
 			this.pokemonService.caught.push(pokemon);
-			alert(`caught ${pokemon.name}`);
-
 			this.caughtPokemon = true;
 		}
 	}

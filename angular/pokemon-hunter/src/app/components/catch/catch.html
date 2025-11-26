@@ -5,11 +5,20 @@
     </div>
 
     <!-- https://angular.dev/guide/http/http-resource -->
-    @if (pokemonService.resource.hasValue() && !caughtPokemon) {
+    @if (pokemonService.resource.hasValue()) {
     @let data = pokemonService.resource.value();
+
     <div>
+        @if (caughtPokemon) {
+
+        you've caught {{data.name | titlecase}}
+
+        } @else {
+
         <img [src]="data.sprite" alt="pokemon image" (click)="catchPokemon()">
         {{data.name | titlecase}}
+
+        }
     </div>
     }
 
