@@ -1,4 +1,5 @@
 import type { Routes } from "@angular/router";
+import { Dashboard } from "./components/dashboard/dashboard";
 import { Login } from "./components/login/login";
 import { authGuard } from "./guards/auth-guard";
 
@@ -6,8 +7,7 @@ export const routes: Routes = [
 	{ path: "", component: Login },
 	{
 		path: "dashboard",
-		loadComponent: () =>
-			import("./components/dashboard/dashboard").then((e) => e.Dashboard),
+		component: Dashboard,
 		canActivate: [authGuard],
 	},
 	{
@@ -15,5 +15,9 @@ export const routes: Routes = [
 		loadComponent: () =>
 			import("./components/catch/catch").then((e) => e.Catch),
 		canActivate: [authGuard],
+	},
+	{
+		path: "**",
+		redirectTo: "dashboard",
 	},
 ];
