@@ -5,20 +5,19 @@
     </div>
 
     <!-- https://angular.dev/guide/http/http-resource -->
-    @if (pokemonService.resource.hasValue()) {
+    @if (pokemonService.resource.hasValue() && !caughtPokemon) {
     @let data = pokemonService.resource.value();
     <div>
-        resource
-        <img [src]="data.sprite" alt="pokemon image">
-        {{data.name}}
+        <img [src]="data.sprite" alt="pokemon image" (click)="catchPokemon()">
+        {{data.name | titlecase}}
     </div>
     }
 
     <!-- https://angular.dev/guide/http/making-requests#best-practices -->
-    @if (pokemon$ | async; as pokemon) {
+    <!-- @if (pokemon$ | async; as pokemon) {
     <div>
         <img [src]="pokemon.sprite" alt="pokemon image">
         {{pokemon.name}}
     </div>
-    }
+    } -->
 </div>

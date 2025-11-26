@@ -46,6 +46,8 @@ export class PokemonService {
 		},
 	);
 
+	caught: Pokemon[] = [];
+
 	private randomPokemonId() {
 		return Math.floor(Math.random() * 1025) + 1;
 	}
