@@ -30,7 +30,6 @@ export class PokemonService {
 	private http = inject(HttpClient);
 
 	private resId = signal(this.randomPokemonId());
-
 	readonly resource = httpResource(
 		() => `https://pokeapi.co/api/v2/pokemon/${this.resId()}`,
 		{
@@ -46,7 +45,7 @@ export class PokemonService {
 		},
 	);
 
-	caught: Pokemon[] = [];
+	private caught: Pokemon[] = [];
 
 	private randomPokemonId() {
 		return Math.floor(Math.random() * 1025) + 1;
@@ -68,5 +67,23 @@ export class PokemonService {
 
 	regeneratePokemon() {
 		this.resId.set(this.randomPokemonId());
+	}
+
+	validateCurrent() {
+		const last = this.caught.at(-1);
+
+		if (last && last.id === this.resId()) {
+			this.regeneratePokemon();
+		}
+	}
+
+	catchCurrent() {
+		if (this.resource.hasValue()) {
+			this.caught.push(this.resource.value());
+		}
+	}
+
+	getCaught() {
+		return this.caught;
 	}
 }

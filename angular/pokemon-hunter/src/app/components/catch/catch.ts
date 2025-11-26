@@ -1,5 +1,5 @@
 import { TitleCasePipe } from "@angular/common";
-import { Component, inject } from "@angular/core";
+import { Component, inject, type OnInit } from "@angular/core";
 import type { Observable } from "rxjs";
 import type { Pokemon } from "../../interfaces/pokemon";
 import { PokemonService } from "../../services/pokemon-service";
@@ -10,11 +10,16 @@ import { PokemonService } from "../../services/pokemon-service";
 	templateUrl: "./catch.html",
 	styleUrl: "./catch.css",
 })
-export class Catch {
+export class Catch implements OnInit {
 	pokemon$!: Observable<Pokemon>;
 
-	pokemonService = inject(PokemonService);
+	private pokemonService = inject(PokemonService);
+
 	caughtPokemon = false;
+
+	ngOnInit(): void {
+		this.pokemonService.validateCurrent();
+	}
 
 	getRandomPokemon() {
 		// this.pokemon$ = this.pokemonService.getRandomPokemon();
@@ -22,11 +27,15 @@ export class Catch {
 		this.caughtPokemon = false;
 	}
 
-	catchPokemon() {
-		const pokemon = this.pokemonService.resource.value();
+	get pokemonResource() {
+		return this.pokemonService.resource;
+	}
 
-		if (pokemon) {
-			this.pokemonService.caught.push(pokemon);
+	catchPokemon() {
+		if (this.caughtPokemon) return;
+
+		if (this.pokemonResource.hasValue()) {
+			this.pokemonService.catchCurrent();
 			this.caughtPokemon = true;
 		}
 	}
