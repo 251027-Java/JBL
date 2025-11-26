@@ -1,5 +1,5 @@
 import { TitleCasePipe } from "@angular/common";
-import { Component, inject, type OnInit } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import type { Observable } from "rxjs";
 import type { Pokemon } from "../../interfaces/pokemon";
 import { PokemonService } from "../../services/pokemon-service";
@@ -10,15 +10,11 @@ import { PokemonService } from "../../services/pokemon-service";
 	templateUrl: "./catch.html",
 	styleUrl: "./catch.css",
 })
-export class Catch implements OnInit {
+export class Catch {
 	pokemon$!: Observable<Pokemon>;
 
 	pokemonService = inject(PokemonService);
 	caughtPokemon = false;
-
-	ngOnInit(): void {
-		this.getRandomPokemon();
-	}
 
 	getRandomPokemon() {
 		// this.pokemon$ = this.pokemonService.getRandomPokemon();
