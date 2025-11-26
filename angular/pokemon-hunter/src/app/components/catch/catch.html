@@ -1,0 +1,32 @@
+<div class="container-fluid">
+    <div>
+        <h3>click poemon to catch it</h3>
+        <button class="btn btn-sm btn-dark" (click)="getRandomPokemon()">reshuffle</button>
+    </div>
+
+    <!-- https://angular.dev/guide/http/http-resource -->
+    @if (pokemonService.resource.hasValue()) {
+    @let data = pokemonService.resource.value();
+
+    <div>
+        @if (caughtPokemon) {
+
+        you've caught {{data.name | titlecase}}
+
+        } @else {
+
+        <img [src]="data.sprite" alt="pokemon image" (click)="catchPokemon()">
+        {{data.name | titlecase}}
+
+        }
+    </div>
+    }
+
+    <!-- https://angular.dev/guide/http/making-requests#best-practices -->
+    <!-- @if (pokemon$ | async; as pokemon) {
+    <div>
+        <img [src]="pokemon.sprite" alt="pokemon image">
+        {{pokemon.name}}
+    </div>
+    } -->
+</div>
