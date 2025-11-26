@@ -46,7 +46,7 @@ export class PokemonService {
 		},
 	);
 
-	caught: Pokemon[] = [];
+	private caught: Pokemon[] = [];
 
 	private randomPokemonId() {
 		return Math.floor(Math.random() * 1025) + 1;
@@ -68,5 +68,15 @@ export class PokemonService {
 
 	regeneratePokemon() {
 		this.resId.set(this.randomPokemonId());
+	}
+
+	catchCurrent() {
+		if (this.resource.hasValue()) {
+			this.caught.push(this.resource.value());
+		}
+	}
+
+	getCaught() {
+		return this.caught;
 	}
 }

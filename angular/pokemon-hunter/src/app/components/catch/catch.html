@@ -5,8 +5,8 @@
     </div>
 
     <!-- https://angular.dev/guide/http/http-resource -->
-    @if (pokemonService.resource.hasValue()) {
-    @let data = pokemonService.resource.value();
+    @if (pokemonResource.hasValue()) {
+    @let data = pokemonResource.value();
 
     <div>
         @if (caughtPokemon) {

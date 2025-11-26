@@ -13,7 +13,8 @@ import { PokemonService } from "../../services/pokemon-service";
 export class Catch {
 	pokemon$!: Observable<Pokemon>;
 
-	pokemonService = inject(PokemonService);
+	private pokemonService = inject(PokemonService);
+
 	caughtPokemon = false;
 
 	getRandomPokemon() {
@@ -22,11 +23,15 @@ export class Catch {
 		this.caughtPokemon = false;
 	}
 
-	catchPokemon() {
-		const pokemon = this.pokemonService.resource.value();
+	get pokemonResource() {
+		return this.pokemonService.resource;
+	}
 
-		if (pokemon) {
-			this.pokemonService.caught.push(pokemon);
+	catchPokemon() {
+		if (this.caughtPokemon) return;
+
+		if (this.pokemonResource.hasValue()) {
+			this.pokemonService.catchCurrent();
 			this.caughtPokemon = true;
 		}
 	}

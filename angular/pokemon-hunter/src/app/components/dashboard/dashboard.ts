@@ -9,5 +9,9 @@ import { PokemonService } from "../../services/pokemon-service";
 	styleUrl: "./dashboard.css",
 })
 export class Dashboard {
-	protected pokemonService = inject(PokemonService);
+	private pokemonService = inject(PokemonService);
+
+	getCaught() {
+		return this.pokemonService.getCaught();
+	}
 }
