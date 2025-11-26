@@ -4,7 +4,17 @@
         <button class="btn btn-sm btn-dark" (click)="getRandomPokemon()">reshuffle</button>
     </div>
 
+    <!-- https://angular.dev/guide/http/http-resource -->
+    @if (pokemonService.resource.hasValue()) {
+    @let data = pokemonService.resource.value();
+    <div>
+        resource
+        <img [src]="data.sprite" alt="pokemon image">
+        {{data.name}}
+    </div>
+    }
 
+    <!-- https://angular.dev/guide/http/making-requests#best-practices -->
     @if (pokemon$ | async; as pokemon) {
     <div>
         <img [src]="pokemon.sprite" alt="pokemon image">

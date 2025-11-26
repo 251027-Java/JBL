@@ -21,5 +21,6 @@ export class Catch implements OnInit {
 
 	getRandomPokemon() {
 		this.pokemon$ = this.pokemonService.getRandomPokemon();
+		this.pokemonService.regeneratePokemon();
 	}
 }
