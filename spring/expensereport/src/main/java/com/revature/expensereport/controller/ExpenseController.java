@@ -1,23 +1,31 @@
 package com.revature.expensereport.controller;
 
+import com.revature.expensereport.model.Expense;
+import com.revature.expensereport.service.ExpenseService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("api")
+@RequestMapping("/api/expenses")
 public class ExpenseController {
 
-    @GetMapping("/test")
-    Data test() {
-        return new Data("this is a test", 0);
+    private final ExpenseService expenseService;
+
+    public ExpenseController(ExpenseService expenseService) {
+        this.expenseService = expenseService;
     }
 
-    @GetMapping("/hello")
-    String hello(@RequestParam String name, @RequestParam(defaultValue = "Hello") String greeting) {
-        return String.format("%s %s!", greeting, name);
+    @GetMapping
+    public List<Expense> getAllExpenses() {
+        return expenseService.getAllExpenses();
     }
 
-    public record Data(String name, int id) {}
+    @GetMapping("/search")
+    public List<Expense> search(@RequestParam String merchant) {
+        return expenseService.searchByMerchant(merchant);
+    }
 }
