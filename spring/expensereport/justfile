@@ -1,0 +1,12 @@
+maven := './mvnw'
+
+# style check
+[group('style')]
+check:
+    {{ maven }} spotless:check
+    {{ maven }} checkstyle:check
+
+# format all code
+[group('style')]
+format:
+    {{ maven }} spotless:apply
