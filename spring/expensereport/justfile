@@ -10,3 +10,19 @@ check:
 [group('style')]
 format:
     {{ maven }} spotless:apply
+
+# removes artifacts and temporary files
+clean:
+    {{ maven }} clean
+
+# verify project integrity
+verify:
+    {{ maven }} verify
+
+# cleans and verifies project integrity
+[default]
+default: clean verify
+
+# launch the spring boot program
+run:
+    {{ maven }} spring-boot:run
