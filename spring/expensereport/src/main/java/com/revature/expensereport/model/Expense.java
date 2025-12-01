@@ -1,5 +1,6 @@
 package com.revature.expensereport.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -14,6 +15,8 @@ public class Expense {
 
     private String merchant;
     private LocalDateTime date;
+
+    @Column(name = "price")
     private double value;
 
     public Expense() {}
