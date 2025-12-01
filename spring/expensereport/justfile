@@ -1,4 +1,7 @@
 maven := './mvnw'
+debug_args := '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
+
+alias refresh := compile
 
 # style check
 [group('style')]
@@ -23,6 +26,14 @@ verify:
 [default]
 default: clean verify
 
-# launch the spring boot program
-run:
+# launch the application
+run: clean
     {{ maven }} spring-boot:run
+
+# launch the application with the debugger
+debug: clean
+    {{ maven }} spring-boot:run -Dspring-boot.run.jvmArguments="{{ debug_args }}"
+
+# compile the program
+compile:
+    {{ maven }} compile
