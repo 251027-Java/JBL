@@ -1,5 +1,6 @@
 package com.revature.expensereport.service;
 
+import com.revature.expensereport.dto.ExpenseDto;
 import com.revature.expensereport.model.Expense;
 import com.revature.expensereport.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,26 @@ public class ExpenseService {
         this.expenseRepository = expenseRepository;
     }
 
-    public List<Expense> getAllExpenses() {
-        return expenseRepository.findAll();
+    public List<ExpenseDto> getAllExpenses() {
+        return expenseRepository.findAll().stream().map(this::toDto).toList();
     }
 
-    public List<Expense> searchByMerchant(String merchant) {
-        return expenseRepository.findByMerchant(merchant);
+    public List<ExpenseDto> searchByMerchant(String merchant) {
+        return expenseRepository.findByMerchant(merchant).stream()
+                .map(this::toDto)
+                .toList();
+    }
+
+    public ExpenseDto create(ExpenseDto expenseDto) {
+        var entity = expenseRepository.save(new Expense(expenseDto.date(), expenseDto.merchant(), expenseDto.value()));
+        return toDto(entity);
+    }
+
+    public ExpenseDto getById(String id) {
+        return expenseRepository.findById(id).map(this::toDto).orElse(null);
+    }
+
+    private ExpenseDto toDto(Expense expense) {
+        return new ExpenseDto(expense.getId(), expense.getDate(), expense.getMerchant(), expense.getValue());
     }
 }

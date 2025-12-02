@@ -1,11 +1,8 @@
 package com.revature.expensereport.controller;
 
-import com.revature.expensereport.model.Expense;
+import com.revature.expensereport.dto.ExpenseDto;
 import com.revature.expensereport.service.ExpenseService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,12 +17,22 @@ public class ExpenseController {
     }
 
     @GetMapping
-    public List<Expense> getAllExpenses() {
+    public List<ExpenseDto> getAllExpenses() {
         return expenseService.getAllExpenses();
     }
 
     @GetMapping("/search")
-    public List<Expense> search(@RequestParam String merchant) {
+    public List<ExpenseDto> search(@RequestParam String merchant) {
         return expenseService.searchByMerchant(merchant);
+    }
+
+    @PostMapping
+    public ExpenseDto create(@RequestBody ExpenseDto expenseDto) {
+        return expenseService.create(expenseDto);
+    }
+
+    @GetMapping("/{id}")
+    public ExpenseDto getById(@PathVariable String id) {
+        return expenseService.getById(id);
     }
 }
