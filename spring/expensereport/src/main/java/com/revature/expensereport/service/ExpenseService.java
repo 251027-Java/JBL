@@ -1,9 +1,12 @@
 package com.revature.expensereport.service;
 
 import com.revature.expensereport.dto.ExpenseDto;
+import com.revature.expensereport.dto.SimpleExpenseDto;
 import com.revature.expensereport.model.Expense;
 import com.revature.expensereport.repository.ExpenseRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -25,13 +28,32 @@ public class ExpenseService {
                 .toList();
     }
 
-    public ExpenseDto create(ExpenseDto expenseDto) {
+    public ExpenseDto create(SimpleExpenseDto expenseDto) {
         var entity = expenseRepository.save(new Expense(expenseDto.date(), expenseDto.merchant(), expenseDto.value()));
         return toDto(entity);
     }
 
     public ExpenseDto getById(String id) {
         return expenseRepository.findById(id).map(this::toDto).orElse(null);
+    }
+
+    public ExpenseDto update(String id, SimpleExpenseDto dto) {
+        var expense = expenseRepository
+                .findById(id)
+                .map(e -> {
+                    e.setDate(dto.date());
+                    e.setMerchant(dto.merchant());
+                    e.setValue(dto.value());
+
+                    return e;
+                })
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        return toDto(expenseRepository.save(expense));
+    }
+
+    public void delete(String id) {
+        expenseRepository.deleteById(id);
     }
 
     private ExpenseDto toDto(Expense expense) {

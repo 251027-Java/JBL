@@ -1,6 +1,7 @@
 package com.revature.expensereport.controller;
 
 import com.revature.expensereport.dto.ExpenseDto;
+import com.revature.expensereport.dto.SimpleExpenseDto;
 import com.revature.expensereport.service.ExpenseService;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,12 +28,22 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public ExpenseDto create(@RequestBody ExpenseDto expenseDto) {
-        return expenseService.create(expenseDto);
+    public ExpenseDto create(@RequestBody SimpleExpenseDto dto) {
+        return expenseService.create(dto);
     }
 
     @GetMapping("/{id}")
     public ExpenseDto getById(@PathVariable String id) {
         return expenseService.getById(id);
+    }
+
+    @PutMapping("/{id}")
+    public ExpenseDto update(@PathVariable String id, @RequestBody SimpleExpenseDto dto) {
+        return expenseService.update(id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable String id) {
+        expenseService.delete(id);
     }
 }
