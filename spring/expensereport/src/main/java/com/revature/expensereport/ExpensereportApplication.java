@@ -25,7 +25,7 @@ public class ExpensereportApplication {
                     new Expense(LocalDateTime.now(), "starbucks", 35.35),
                     new Expense(LocalDateTime.now(), "buffalo wild wings", 99.65));
 
-            expenseRepository.saveAllAndFlush(list);
+            expenseRepository.saveAll(list);
         };
     }
 }
