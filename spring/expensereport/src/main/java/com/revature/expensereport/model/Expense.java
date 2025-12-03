@@ -1,13 +1,13 @@
 package com.revature.expensereport.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Data
 public class Expense {
     @Id
     @GeneratedValue
@@ -19,43 +19,16 @@ public class Expense {
     @Column(name = "price")
     private double value;
 
+    @ManyToOne
+    @JoinColumn(name = "report_id")
+    @ToString.Exclude
+    private Report report;
+
     public Expense() {}
 
     public Expense(LocalDateTime date, String merchant, double value) {
         this.date = date;
         this.merchant = merchant;
-        this.value = value;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getMerchant() {
-        return merchant;
-    }
-
-    public void setMerchant(String merchant) {
-        this.merchant = merchant;
-    }
-
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
-    public double getValue() {
-        return value;
-    }
-
-    public void setValue(double value) {
         this.value = value;
     }
 }
