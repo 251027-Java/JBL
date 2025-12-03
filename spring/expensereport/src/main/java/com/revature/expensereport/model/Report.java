@@ -24,7 +24,7 @@ public class Report {
     @OneToMany(mappedBy = "report")
     private List<Expense> expenses = new ArrayList<>();
 
-    public Report(String status, String title) {
+    public Report(String title, String status) {
         this.status = status;
         this.title = title;
     }
