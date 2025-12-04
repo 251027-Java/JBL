@@ -1,3 +1,5 @@
+package scripts;
+
 import com.revature.expensereport.model.Expense;
 import com.revature.expensereport.model.Report;
 import org.hibernate.boot.MetadataSources;
@@ -7,8 +9,10 @@ import org.hibernate.tool.schema.TargetType;
 
 import java.util.EnumSet;
 
-public class Test {
-    static void main() {
+public class GenerateDdl {
+    static void main(String[] args) {
+        Logging.disableLogging();
+
         var registry = new StandardServiceRegistryBuilder()
                 .applySetting("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect")
                 .build();
@@ -16,11 +20,10 @@ public class Test {
         var metadata = new MetadataSources(registry)
                 .addAnnotatedClass(Report.class)
                 .addAnnotatedClass(Expense.class)
-                // Add all your entity classes
                 .buildMetadata();
 
         var schemaExport = new SchemaExport();
-        schemaExport.setOutputFile("target/schema.sql");
+        schemaExport.setOutputFile(args[0]);
         schemaExport.setFormat(true);
         schemaExport.setDelimiter(";");
         schemaExport.execute(EnumSet.of(TargetType.SCRIPT), SchemaExport.Action.CREATE, metadata);
