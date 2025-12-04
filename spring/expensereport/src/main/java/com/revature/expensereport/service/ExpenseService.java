@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ExpenseService {
@@ -46,21 +45,12 @@ public class ExpenseService {
     }
 
     public ExpenseDto.Standard update(String id, ExpenseDto.NoId dto) {
-        var report = Optional.ofNullable(dto.reportId())
-                .map(e -> reportRepository
-                        .findById(e)
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Report not found")))
-                .orElse(null);
-
         var expense = expenseRepository
                 .findById(id)
                 .map(e -> {
-                    e.setDate(dto.date());
-                    e.setMerchant(dto.merchant());
-                    e.setValue(dto.value());
-                    e.setReport(report);
-
-                    return e;
+                    var entity = expenseMapper.toEntity(dto, reportRepository);
+                    entity.setId(e.getId());
+                    return entity;
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Expense not found"));
 
