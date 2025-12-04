@@ -42,9 +42,9 @@ public class ReportService {
         var ret = reportRepository
                 .findById(id)
                 .map(e -> {
-                    e.setTitle(dto.title());
-                    e.setStatus(dto.status());
-                    return e;
+                    var entity = reportMapper.toEntity(dto);
+                    entity.setId(e.getId());
+                    return entity;
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return reportMapper.toStandardDto(reportRepository.save(ret));
