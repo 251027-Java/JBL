@@ -1,9 +1,10 @@
 package com.revature.expensereport.service;
 
+import com.revature.expensereport.dto.FullReportDto;
+import com.revature.expensereport.dto.PartialExpenseDto;
 import com.revature.expensereport.dto.ReportDto;
 import com.revature.expensereport.dto.SimpleReportDto;
 import com.revature.expensereport.model.Report;
-import com.revature.expensereport.repository.ExpenseRepository;
 import com.revature.expensereport.repository.ReportRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,32 +18,32 @@ import java.util.List;
 public class ReportService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportService.class);
     private final ReportRepository reportRepository;
-    private final ExpenseRepository expenseRepository;
 
-    public ReportService(ReportRepository reportRepository, ExpenseRepository expenseRepository) {
+    public ReportService(ReportRepository reportRepository) {
         this.reportRepository = reportRepository;
-        this.expenseRepository = expenseRepository;
     }
 
-    public List<ReportDto> getAllReports() {
+    public List<FullReportDto> getAllReports() {
         var res = reportRepository.findAll();
 
         LOGGER.info(res.toString());
 
-        return res.stream().map(this::toDto).toList();
+        return res.stream().map(this::toFuilReportDto).toList();
     }
 
     public List<ReportDto> findByTitle(String title) {
-        return reportRepository.findByTitle(title).stream().map(this::toDto).toList();
+        return reportRepository.findByTitle(title).stream()
+                .map(this::toReportDto)
+                .toList();
     }
 
     public ReportDto create(SimpleReportDto dto) {
         var e = reportRepository.save(new Report(dto.title(), dto.status()));
-        return toDto(e);
+        return toReportDto(e);
     }
 
-    public ReportDto getById(String id) {
-        return reportRepository.findById(id).map(this::toDto).orElse(null);
+    public FullReportDto getById(String id) {
+        return reportRepository.findById(id).map(this::toFuilReportDto).orElse(null);
     }
 
     public ReportDto update(String id, SimpleReportDto dto) {
@@ -54,7 +55,7 @@ public class ReportService {
                     return e;
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        return toDto(reportRepository.save(ret));
+        return toReportDto(reportRepository.save(ret));
     }
 
     public void delete(String id) {
@@ -62,7 +63,14 @@ public class ReportService {
         reportRepository.deleteById(id);
     }
 
-    private ReportDto toDto(Report report) {
+    private ReportDto toReportDto(Report report) {
         return new ReportDto(report.getId(), report.getTitle(), report.getStatus());
+    }
+
+    private FullReportDto toFuilReportDto(Report report) {
+        var expenses = report.getExpenses().stream()
+                .map(e -> new PartialExpenseDto(e.getId(), e.getDate(), e.getMerchant(), e.getValue()))
+                .toList();
+        return new FullReportDto(report.getId(), report.getTitle(), report.getStatus(), expenses);
     }
 }

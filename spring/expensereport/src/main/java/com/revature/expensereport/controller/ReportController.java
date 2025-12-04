@@ -1,5 +1,6 @@
 package com.revature.expensereport.controller;
 
+import com.revature.expensereport.dto.FullReportDto;
 import com.revature.expensereport.dto.ReportDto;
 import com.revature.expensereport.dto.SimpleReportDto;
 import com.revature.expensereport.service.ReportService;
@@ -17,7 +18,7 @@ public class ReportController {
     }
 
     @GetMapping
-    public List<ReportDto> getAllReports() {
+    public List<FullReportDto> getAllReports() {
         return reportService.getAllReports();
     }
 
@@ -32,7 +33,7 @@ public class ReportController {
     }
 
     @GetMapping("/{id}")
-    public ReportDto getById(@PathVariable String id) {
+    public FullReportDto getById(@PathVariable String id) {
         return reportService.getById(id);
     }
 
