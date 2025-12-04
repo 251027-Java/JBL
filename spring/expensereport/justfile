@@ -1,5 +1,6 @@
 maven := './mvnw'
 debug_args := '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
+classpath := '.gen-classpath'
 
 alias refresh := compile
 
@@ -37,3 +38,12 @@ debug: clean
 # compile the program
 compile:
     {{ maven }} compile
+
+_gen-classpath:
+    {{ maven }} dependency:build-classpath -Dmdep.outputFile={{ classpath }}
+
+# generate a DDL script from JPA entities
+gen-ddl filepath='scripts/init.sql': _gen-classpath
+    rm -rf {{ filepath }}
+    java -cp target/classes:`cat {{ classpath }}` src/main/java/scripts/GenerateDdl.java {{ filepath }}
+    docker run --rm -v /$(pwd):/work backplane/pgformatter -i {{ filepath }}

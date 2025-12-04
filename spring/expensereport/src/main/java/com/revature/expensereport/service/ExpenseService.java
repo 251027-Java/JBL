@@ -1,62 +1,73 @@
 package com.revature.expensereport.service;
 
 import com.revature.expensereport.dto.ExpenseDto;
-import com.revature.expensereport.dto.SimpleExpenseDto;
-import com.revature.expensereport.model.Expense;
+import com.revature.expensereport.mapper.ExpenseMapper;
 import com.revature.expensereport.repository.ExpenseRepository;
+import com.revature.expensereport.repository.ReportRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ExpenseService {
     private final ExpenseRepository expenseRepository;
+    private final ReportRepository reportRepository;
+    private final ExpenseMapper expenseMapper;
 
-    public ExpenseService(ExpenseRepository expenseRepository) {
+    public ExpenseService(
+            ExpenseRepository expenseRepository, ReportRepository reportRepository, ExpenseMapper expenseMapper) {
         this.expenseRepository = expenseRepository;
+        this.reportRepository = reportRepository;
+        this.expenseMapper = expenseMapper;
     }
 
-    public List<ExpenseDto> getAllExpenses() {
-        return expenseRepository.findAll().stream().map(this::toDto).toList();
-    }
-
-    public List<ExpenseDto> searchByMerchant(String merchant) {
-        return expenseRepository.findByMerchant(merchant).stream()
-                .map(this::toDto)
+    public List<ExpenseDto.Standard> getAllExpenses() {
+        return expenseRepository.findAll().stream()
+                .map(expenseMapper::toStandardDto)
                 .toList();
     }
 
-    public ExpenseDto create(SimpleExpenseDto expenseDto) {
-        var entity = expenseRepository.save(new Expense(expenseDto.date(), expenseDto.merchant(), expenseDto.value()));
-        return toDto(entity);
+    public List<ExpenseDto.Standard> searchByMerchant(String merchant) {
+        return expenseRepository.findByMerchant(merchant).stream()
+                .map(expenseMapper::toStandardDto)
+                .toList();
     }
 
-    public ExpenseDto getById(String id) {
-        return expenseRepository.findById(id).map(this::toDto).orElse(null);
+    public ExpenseDto.Standard create(ExpenseDto.NoId expenseDto) {
+        var entity = expenseRepository.save(expenseMapper.toEntity(expenseDto, reportRepository));
+        return expenseMapper.toStandardDto(entity);
     }
 
-    public ExpenseDto update(String id, SimpleExpenseDto dto) {
+    public ExpenseDto.Standard getById(String id) {
+        return expenseRepository.findById(id).map(expenseMapper::toStandardDto).orElse(null);
+    }
+
+    public ExpenseDto.Standard update(String id, ExpenseDto.NoId dto) {
+        var report = Optional.ofNullable(dto.reportId())
+                .map(e -> reportRepository
+                        .findById(e)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Report not found")))
+                .orElse(null);
+
         var expense = expenseRepository
                 .findById(id)
                 .map(e -> {
                     e.setDate(dto.date());
                     e.setMerchant(dto.merchant());
                     e.setValue(dto.value());
+                    e.setReport(report);
 
                     return e;
                 })
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Expense not found"));
 
-        return toDto(expenseRepository.save(expense));
+        return expenseMapper.toStandardDto(expenseRepository.save(expense));
     }
 
     public void delete(String id) {
         expenseRepository.deleteById(id);
-    }
-
-    private ExpenseDto toDto(Expense expense) {
-        return new ExpenseDto(expense.getId(), expense.getDate(), expense.getMerchant(), expense.getValue());
     }
 }
