@@ -1,4 +1,4 @@
-CREATE TABLE Expense (
+CREATE TABLE expense (
     id varchar(255) NOT NULL,
     date timestamp(6),
     merchant varchar(255),
@@ -7,13 +7,13 @@ CREATE TABLE Expense (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE Report (
+CREATE TABLE report (
     id varchar(255) NOT NULL,
     status varchar(255),
     title varchar(255),
     PRIMARY KEY (id)
 );
 
-ALTER TABLE IF EXISTS Expense
-    ADD CONSTRAINT FKcxyk78fnaup0y4tgk8l7gd33h FOREIGN KEY (report_id) REFERENCES Report;
+ALTER TABLE IF EXISTS expense
+    ADD CONSTRAINT FKp2g4hmp5u0jyccj77jgxs9ct1 FOREIGN KEY (report_id) REFERENCES report;
 
