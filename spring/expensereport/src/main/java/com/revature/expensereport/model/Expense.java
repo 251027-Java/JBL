@@ -30,9 +30,16 @@ public class Expense {
     @ToString.Exclude
     private Report report;
 
-    public Expense(LocalDateTime date, String merchant, double value) {
-        this.date = date;
+    public Expense(String merchant, LocalDateTime date, double value) {
         this.merchant = merchant;
+        this.date = date;
         this.value = value;
+    }
+
+    public Expense(String merchant, LocalDateTime date, double value, Report report) {
+        this.merchant = merchant;
+        this.date = date;
+        this.value = value;
+        this.report = report;
     }
 }

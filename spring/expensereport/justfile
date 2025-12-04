@@ -43,7 +43,12 @@ _gen-classpath:
     {{ maven }} dependency:build-classpath -Dmdep.outputFile={{ classpath }}
 
 # generate a DDL script from JPA entities
-gen-ddl filepath='scripts/init.sql': _gen-classpath
-    rm -rf {{ filepath }}
-    java -cp target/classes:`cat {{ classpath }}` src/main/java/scripts/GenerateDdl.java {{ filepath }}
-    docker run --rm -v /$(pwd):/work backplane/pgformatter -i {{ filepath }}
+ddl filepath='scripts/init.sql': compile _gen-classpath
+    javac -cp target/classes;`cat {{ classpath }}` src/main/java/scripts/GenerateDdl.java
+
+#    rm -rf {{ filepath }}
+#    java -cp target/classes:`cat {{ classpath }}` src/main/java/scripts/GenerateDdl.java {{ filepath }}
+#    docker run --rm -v /`pwd`:/work backplane/pgformatter -i {{ filepath }}
+
+temp:
+    {{ maven }} exec:java -Dexec.additionalClasspath=target/classes -Dexec.mainClass="scripts.GenerateDdl"
