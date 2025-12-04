@@ -15,5 +15,5 @@ CREATE TABLE report (
 );
 
 ALTER TABLE IF EXISTS expense
-    ADD CONSTRAINT FKp2g4hmp5u0jyccj77jgxs9ct1 FOREIGN KEY (report_id) REFERENCES report;
+    ADD CONSTRAINT FKp2g4hmp5u0jyccj77jgxs9ct1 FOREIGN KEY (report_id) REFERENCES report ON DELETE SET NULL;
 
