@@ -1,8 +1,6 @@
 package com.revature.expensereport.controller;
 
-import com.revature.expensereport.dto.FullReportDto;
 import com.revature.expensereport.dto.ReportDto;
-import com.revature.expensereport.dto.SimpleReportDto;
 import com.revature.expensereport.service.ReportService;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,27 +16,27 @@ public class ReportController {
     }
 
     @GetMapping
-    public List<FullReportDto> getAllReports() {
+    public List<ReportDto.WithExpenses> getAllReports() {
         return reportService.getAllReports();
     }
 
     @GetMapping("/search")
-    public List<ReportDto> search(@RequestParam String title) {
+    public List<ReportDto.Standard> search(@RequestParam String title) {
         return reportService.findByTitle(title);
     }
 
     @PostMapping
-    public ReportDto create(@RequestBody SimpleReportDto dto) {
+    public ReportDto.Standard create(@RequestBody ReportDto.NoId dto) {
         return reportService.create(dto);
     }
 
     @GetMapping("/{id}")
-    public FullReportDto getById(@PathVariable String id) {
+    public ReportDto.WithExpenses getById(@PathVariable String id) {
         return reportService.getById(id);
     }
 
     @PutMapping("/{id}")
-    public ReportDto update(@PathVariable String id, @RequestBody SimpleReportDto dto) {
+    public ReportDto.Standard update(@PathVariable String id, @RequestBody ReportDto.NoId dto) {
         return reportService.update(id, dto);
     }
 

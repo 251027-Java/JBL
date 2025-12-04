@@ -1,7 +1,6 @@
 package com.revature.expensereport.mapper;
 
 import com.revature.expensereport.dto.ExpenseDto;
-import com.revature.expensereport.dto.SimpleExpenseDto;
 import com.revature.expensereport.model.Expense;
 import com.revature.expensereport.model.Report;
 import com.revature.expensereport.repository.ReportRepository;
@@ -14,11 +13,13 @@ import org.springframework.web.server.ResponseStatusException;
 @Mapper(componentModel = "spring")
 public interface ExpenseMapper {
     @Mapping(target = "reportId", source = "report.id")
-    ExpenseDto toExpenseDto(Expense expense);
+    ExpenseDto.Standard toStandardDto(Expense expense);
+
+    ExpenseDto.NoReport toSmallDto(Expense expense);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "report", source = "reportId")
-    Expense toEntity(SimpleExpenseDto dto, @Context ReportRepository reportRepository);
+    Expense toEntity(ExpenseDto.NoId dto, @Context ReportRepository reportRepository);
 
     default Report map(String id, @Context ReportRepository reportRepository) {
         if (id == null) return null;

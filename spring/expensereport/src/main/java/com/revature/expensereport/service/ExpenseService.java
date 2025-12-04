@@ -1,7 +1,6 @@
 package com.revature.expensereport.service;
 
 import com.revature.expensereport.dto.ExpenseDto;
-import com.revature.expensereport.dto.SimpleExpenseDto;
 import com.revature.expensereport.mapper.ExpenseMapper;
 import com.revature.expensereport.repository.ExpenseRepository;
 import com.revature.expensereport.repository.ReportRepository;
@@ -25,29 +24,28 @@ public class ExpenseService {
         this.expenseMapper = expenseMapper;
     }
 
-    public List<ExpenseDto> getAllExpenses() {
+    public List<ExpenseDto.Standard> getAllExpenses() {
         return expenseRepository.findAll().stream()
-                .map(expenseMapper::toExpenseDto)
+                .map(expenseMapper::toStandardDto)
                 .toList();
     }
 
-    public List<ExpenseDto> searchByMerchant(String merchant) {
+    public List<ExpenseDto.Standard> searchByMerchant(String merchant) {
         return expenseRepository.findByMerchant(merchant).stream()
-                .map(expenseMapper::toExpenseDto)
+                .map(expenseMapper::toStandardDto)
                 .toList();
     }
 
-    public ExpenseDto create(SimpleExpenseDto expenseDto) {
-        // TODO handle creating with report id?
+    public ExpenseDto.Standard create(ExpenseDto.NoId expenseDto) {
         var entity = expenseRepository.save(expenseMapper.toEntity(expenseDto, reportRepository));
-        return expenseMapper.toExpenseDto(entity);
+        return expenseMapper.toStandardDto(entity);
     }
 
-    public ExpenseDto getById(String id) {
-        return expenseRepository.findById(id).map(expenseMapper::toExpenseDto).orElse(null);
+    public ExpenseDto.Standard getById(String id) {
+        return expenseRepository.findById(id).map(expenseMapper::toStandardDto).orElse(null);
     }
 
-    public ExpenseDto update(String id, SimpleExpenseDto dto) {
+    public ExpenseDto.Standard update(String id, ExpenseDto.NoId dto) {
         var report = Optional.ofNullable(dto.reportId())
                 .map(e -> reportRepository
                         .findById(e)
@@ -66,7 +64,7 @@ public class ExpenseService {
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Expense not found"));
 
-        return expenseMapper.toExpenseDto(expenseRepository.save(expense));
+        return expenseMapper.toStandardDto(expenseRepository.save(expense));
     }
 
     public void delete(String id) {
