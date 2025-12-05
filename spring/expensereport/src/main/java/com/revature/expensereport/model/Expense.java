@@ -25,14 +25,21 @@ public class Expense {
     private double value;
 
     @ManyToOne
-    @JoinColumn(name = "report_id")
+    @JoinColumn(name = "report_id", foreignKey = @ForeignKey(name = "fk_report_id"))
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @ToString.Exclude
     private Report report;
 
-    public Expense(LocalDateTime date, String merchant, double value) {
-        this.date = date;
+    public Expense(String merchant, LocalDateTime date, double value) {
         this.merchant = merchant;
+        this.date = date;
         this.value = value;
+    }
+
+    public Expense(String merchant, LocalDateTime date, double value, Report report) {
+        this.merchant = merchant;
+        this.date = date;
+        this.value = value;
+        this.report = report;
     }
 }
