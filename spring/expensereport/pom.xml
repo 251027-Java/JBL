@@ -69,12 +69,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hibernate.tool</groupId>
-            <artifactId>hibernate-tools-orm</artifactId>
-            <version>7.1.11.Final</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
@@ -87,9 +81,17 @@
         </dependency>
 
         <dependency>
+            <groupId>org.hibernate.tool</groupId>
+            <artifactId>hibernate-tools-orm</artifactId>
+            <version>7.1.11.Final</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.10.2</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

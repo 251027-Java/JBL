@@ -50,5 +50,6 @@ ddl filepath='scripts/init.sql': compile _gen-classpath
     java -cp `cat {{ classpath }}` src/main/java/scripts/GenerateDdl.java {{ filepath }}
     docker run --rm -v /`pwd`:/work backplane/pgformatter -i {{ filepath }}
 
-temp:
-    {{ maven }} exec:java -Dexec.additionalClasspath=target/classes -Dexec.mainClass="scripts.GenerateDdl"
+# builds the jar
+build: clean
+    {{ maven }} package spring-boot:repackage
