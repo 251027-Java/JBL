@@ -4,6 +4,8 @@ import com.revature.expensereport.dto.ExpenseDto;
 import com.revature.expensereport.mapper.ExpenseMapper;
 import com.revature.expensereport.repository.ExpenseRepository;
 import com.revature.expensereport.repository.ReportRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,6 +14,8 @@ import java.util.List;
 
 @Service
 public class ExpenseService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExpenseService.class);
+
     private final ExpenseRepository expenseRepository;
     private final ReportRepository reportRepository;
     private final ExpenseMapper expenseMapper;
@@ -24,9 +28,9 @@ public class ExpenseService {
     }
 
     public List<ExpenseDto.Standard> getAllExpenses() {
-        return expenseRepository.findAll().stream()
-                .map(expenseMapper::toStandardDto)
-                .toList();
+        var s = expenseRepository.findAll();
+        LOGGER.info(s.toString());
+        return s.stream().map(expenseMapper::toStandardDto).toList();
     }
 
     public List<ExpenseDto.Standard> searchByMerchant(String merchant) {

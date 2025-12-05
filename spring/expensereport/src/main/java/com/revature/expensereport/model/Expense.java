@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Entity
 @Data
@@ -41,5 +42,10 @@ public class Expense {
         this.date = date;
         this.value = value;
         this.report = report;
+    }
+
+    @ToString.Include
+    private String reportId() {
+        return Optional.ofNullable(report).map(Report::getId).orElse(null);
     }
 }

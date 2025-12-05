@@ -3,6 +3,8 @@ package com.revature.expensereport.service;
 import com.revature.expensereport.dto.ReportDto;
 import com.revature.expensereport.mapper.ReportMapper;
 import com.revature.expensereport.repository.ReportRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,6 +13,8 @@ import java.util.List;
 
 @Service
 public class ReportService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReportService.class);
+
     private final ReportRepository reportRepository;
     private final ReportMapper reportMapper;
 
@@ -20,7 +24,9 @@ public class ReportService {
     }
 
     public List<ReportDto.WithExpenses> getAllReports() {
-        return reportRepository.findAll().stream().map(reportMapper::toBigDto).toList();
+        var s = reportRepository.findAll();
+        LOGGER.info(s.toString());
+        return s.stream().map(reportMapper::toBigDto).toList();
     }
 
     public List<ReportDto.Standard> findByTitle(String title) {
