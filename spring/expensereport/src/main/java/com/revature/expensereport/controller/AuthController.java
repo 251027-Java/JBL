@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+record AuthResponse(String token) {}
+
+record AuthRequest(String username, String password) {}
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -24,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
+    AuthResponse login(@RequestBody AuthRequest request) {
         var user = userRepository.findByUsername(request.username());
 
         if (user.isEmpty()) {
@@ -37,8 +41,4 @@ public class AuthController {
 
         return new AuthResponse(jwtUtil.generateToken(request.username()));
     }
-
-    public record AuthResponse(String token) {}
-
-    public record AuthRequest(String username, String password) {}
 }
