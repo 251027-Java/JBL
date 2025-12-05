@@ -25,7 +25,7 @@ public class Expense {
     private double value;
 
     @ManyToOne
-    @JoinColumn(name = "report_id")
+    @JoinColumn(name = "report_id", foreignKey = @ForeignKey(name = "fk_report_id"))
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @ToString.Exclude
     private Report report;

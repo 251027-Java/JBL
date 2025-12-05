@@ -1,6 +1,7 @@
 maven := './mvnw'
 debug_args := '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
 classpath := '.gen-classpath'
+java_sep := if os_family() == 'windows' { ';' } else { ':' }
 
 alias refresh := compile
 
@@ -41,14 +42,13 @@ compile:
 
 _gen-classpath:
     {{ maven }} dependency:build-classpath -Dmdep.outputFile={{ classpath }}
+    @echo "{{ java_sep }}target/classes" >> {{ classpath }}
 
 # generate a DDL script from JPA entities
 ddl filepath='scripts/init.sql': compile _gen-classpath
-    javac -cp target/classes;`cat {{ classpath }}` src/main/java/scripts/GenerateDdl.java
-
-#    rm -rf {{ filepath }}
-#    java -cp target/classes:`cat {{ classpath }}` src/main/java/scripts/GenerateDdl.java {{ filepath }}
-#    docker run --rm -v /`pwd`:/work backplane/pgformatter -i {{ filepath }}
+    rm -rf {{ filepath }}
+    java -cp `cat {{ classpath }}` src/main/java/scripts/GenerateDdl.java {{ filepath }}
+    docker run --rm -v /`pwd`:/work backplane/pgformatter -i {{ filepath }}
 
 temp:
     {{ maven }} exec:java -Dexec.additionalClasspath=target/classes -Dexec.mainClass="scripts.GenerateDdl"
