@@ -3,6 +3,7 @@ package com.revature.expensereport.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class Report {
     private String title;
 
     @OneToMany(mappedBy = "report")
+    @ToString.Exclude
     private List<Expense> expenses = new ArrayList<>();
 
     public Report(String title, String status) {
