@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Mapper(componentModel = "spring")
 public interface ExpenseMapper {
+
     @Mapping(target = "reportId", source = "report.id")
     ExpenseDto.Standard toStandardDto(Expense expense);
 
