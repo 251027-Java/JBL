@@ -39,18 +39,26 @@ public class ExpensereportApplication {
             PasswordEncoder passwordEncoder) {
         return args -> {
             var reports = List.of(new Report("texas", "complete"));
-            reportRepository.saveAll(reports);
 
-            expenseRepository.saveAll(List.of(
-                    new Expense("walmart", LocalDateTime.now(), 2.45, reports.getFirst()),
-                    new Expense("starbucks", LocalDateTime.now(), 35.35),
-                    new Expense("buffalo wild wings", LocalDateTime.now(), 99.65)));
+            if (reportRepository.count() == 0) {
+                reportRepository.saveAll(reports);
+            }
 
-            String adminpass = passwordEncoder.encode("password");
-            LOGGER.info("admin password: {}", adminpass);
+            if (expenseRepository.count() == 0) {
+                expenseRepository.saveAll(List.of(
+                        new Expense("walmart", LocalDateTime.now(), 2.45, reports.getFirst()),
+                        new Expense("starbucks", LocalDateTime.now(), 35.35),
+                        new Expense("buffalo wild wings", LocalDateTime.now(), 99.65)));
+            }
 
-            userRepository.saveAll(List.of(
-                    new User("admin", adminpass, "ADMIN"), new User("user", passwordEncoder.encode("secret"), "USER")));
+            if (userRepository.count() == 0) {
+                String adminpass = passwordEncoder.encode("password");
+                LOGGER.info("admin password: {}", adminpass);
+
+                userRepository.saveAll(List.of(
+                        new User("admin", adminpass, "ADMIN"),
+                        new User("user", passwordEncoder.encode("secret"), "USER")));
+            }
         };
     }
 }
