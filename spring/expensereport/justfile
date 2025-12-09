@@ -43,14 +43,11 @@ debug: clean
 compile:
     {{ maven }} compile
 
-_gen-classpath:
-    {{ maven }} dependency:build-classpath -Dmdep.outputFile={{ classpath }}
-    @echo "{{ java_sep }}target/classes" >> {{ classpath }}
-
 # generate a DDL script from JPA entities
 [group('db')]
-ddl filepath=ddl_file: compile _gen-classpath
-    java -cp `cat {{ classpath }}` src/main/java/scripts/GenerateDdl.java {{ package_name }} {{ filepath }}
+ddl filepath=ddl_file:
+    {{ maven }} test-compile
+    {{ maven }} exec:java -Dexec.mainClass="scripts.GenerateDdl" -Dexec.classpathScope=test -Dexec.args="{{ package_name }} {{ filepath }}"
 
 # builds the jar
 build: clean
