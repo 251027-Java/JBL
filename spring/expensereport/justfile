@@ -5,6 +5,8 @@ java_sep := if os_family() == 'windows' { ';' } else { ':' }
 db_container := 'expensereport-db'
 package_name := 'com.revature.expensereport'
 ddl_file := 'scripts/init.sql'
+image_tag := 'minidomo/something'
+
 
 alias refresh := compile
 
@@ -51,7 +53,7 @@ ddl filepath=ddl_file:
 
 # builds the jar
 build: clean
-    {{ maven }} package spring-boot:repackage
+    {{ maven }} package -DskipTests
 
 _db-create:
     docker run --name {{ db_container }} -e POSTGRES_PASSWORD=secret -p 5432:5432 -d postgres
@@ -88,3 +90,6 @@ db-export filepath='expenserp.data':
 # create container with a given data file
 [group('db')]
 db-create-with filepath: _db-create (_db-init filepath)
+
+build-image:
+    docker build -t {{ image_tag }} .
