@@ -6,3 +6,20 @@ services:
       - 5432:5432
     environment:
       POSTGRES_PASSWORD: secret
+    volumes:
+      - exrp-data:/var/lib/postgresql/data
+
+  api:
+    depends_on:
+      - db
+    image: minidomo/exprp-server
+    container_name: exrp-api
+    ports:
+      - 8080:8080
+    environment:
+      DB_URL: "jdbc:postgresql://localhost:5432/postgres"
+      DB_USERNAME: postgres
+      DB_PASSWORD: secret
+
+volumes:
+  exrp-data:
