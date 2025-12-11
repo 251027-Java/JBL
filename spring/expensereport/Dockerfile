@@ -1,15 +1,25 @@
 # syntax=docker/dockerfile:1
 
-FROM eclipse-temurin:25-jdk-jammy AS java_deps
+FROM eclipse-temurin:25-jdk-jammy AS deps
 
-WORKDIR /app
-
-# COPY --chmod=0755 mvnw mvnw
-# COPY .mvn/ .mvn/
+WORKDIR /build
 
 COPY ./ ./
 
-RUN ./mvnw dependency:go-offline
-RUN ./mvnw package -DskipTests
+RUN --mount=type=cache,target=/root/.m2 \
+    ./mvnw -B dependency:go-offline
 
-ENTRYPOINT [ "java", "-jar", "target/expensereport-0.0.1-SNAPSHOT.jar" ]
+FROM deps AS package
+
+WORKDIR /build
+
+RUN --mount=type=cache,target=/root/.m2 \  
+    ./mvnw -B package -DskipTests
+
+FROM eclipse-temurin:25-jre-jammy AS final
+
+COPY --from=package build/target/expensereport-0.0.1-SNAPSHOT.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT [ "java", "-jar", "-Dspring.profiles.active=docker", "app.jar" ]

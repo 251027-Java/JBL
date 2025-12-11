@@ -5,8 +5,9 @@ java_sep := if os_family() == 'windows' { ';' } else { ':' }
 db_container := 'expensereport-db'
 package_name := 'com.revature.expensereport'
 ddl_file := 'scripts/init.sql'
-image_tag := 'minidomo/something'
-
+image_tag := 'minidomo/exprp-server'
+docker_server := 'expenserp-server'
+docker_network := 'exprp-network'
 
 alias refresh := compile
 
@@ -56,7 +57,7 @@ build: clean
     {{ maven }} package -DskipTests
 
 _db-create:
-    docker run --name {{ db_container }} -e POSTGRES_PASSWORD=secret -p 5432:5432 -d postgres
+    docker run --name {{ db_container }} --network {{ docker_network }} -e POSTGRES_PASSWORD=secret -p 5432:5432 -d postgres
 
 _db-init filepath:
     docker cp {{ filepath }} {{ db_container }}:/tmp/dbdata
@@ -92,4 +93,16 @@ db-export filepath='expenserp.data':
 db-create-with filepath: _db-create (_db-init filepath)
 
 build-image:
-    docker build -t {{ image_tag }} .
+    docker build -t {{ image_tag }} -f ./Dockerfile .
+
+docker-run:
+    docker run --name {{ docker_server }} --network {{ docker_network }} --env-file .env -p 8080:8080 -d {{ image_tag }}
+
+docker-destroy:
+    docker rm -f {{ docker_server }}
+
+docker:
+    {{ maven }} spring-boot:run -Dspring-boot.run.profiles=docker
+
+docker-network:
+    docker network create {{ docker_network }}
