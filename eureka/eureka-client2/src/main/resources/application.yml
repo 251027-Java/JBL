@@ -1,14 +1,14 @@
 spring:
   application:
-    name: eureka-client-1
+    name: eureka-client-2
   output:
     ansi:
       enabled: always
 
 server:
-  port: 8061
+  port: 8062
 
 #eureka:
 #  client:
 #    serviceUrl:
-#      defaultZone: http://localhost:8061/eureka
+#      defaultZone: http://localhost:8062/eureka

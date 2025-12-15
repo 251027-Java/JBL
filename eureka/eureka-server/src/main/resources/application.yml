@@ -1,10 +1,12 @@
 spring:
   application:
     name: eureka-server
-  port: 8761
   output:
     ansi:
       enabled: always
+
+server:
+  port: 8761
 
 eureka:
   client:
