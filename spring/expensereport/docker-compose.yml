@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - exrp-data:/var/lib/postgresql
+
+  api:
+    depends_on:
+      - db
+    image: minidomo/exprp-server
+    ports:
+      - 8080:8080
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/postgres
+      DB_USERNAME: postgres
+      DB_PASSWORD: secret
+
+volumes:
+  exrp-data:
