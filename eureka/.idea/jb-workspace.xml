@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WorkspaceSettings">
+    <project name="eureka-client1" path="$PROJECT_DIR$/eureka-client1" />
+    <project name="eureka-client2" path="$PROJECT_DIR$/eureka-client2" />
+    <project name="eureka-server" path="$PROJECT_DIR$/eureka-server" />
+    <project name="gateway" path="$PROJECT_DIR$/gateway" />
+    <option name="workspace" value="true" />
+  </component>
+</project>
