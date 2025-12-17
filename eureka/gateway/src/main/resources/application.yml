@@ -9,18 +9,25 @@ spring:
       server:
         webflux:
           routes:
-            - id: client1-route
+            - id: client1
               uri: lb://eureka-client-1
               predicates:
-                - Path=/client-1/**
+                - Path=/client1/**
               filters:
                 - StripPrefix=1
-            - id: client2-route
-              uri: lb://eureka-client-2
+            - id: client2
+              uri: lb://client2
               predicates:
-                - Path=/client-2/**
+                - Path=/client2/**
               filters:
                 - StripPrefix=1
 
 server:
   port: 8080
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
