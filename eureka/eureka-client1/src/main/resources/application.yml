@@ -6,9 +6,9 @@ spring:
       enabled: always
 
 server:
-  port: 8061
+  port: 8081
 
-#eureka:
-#  client:
-#    serviceUrl:
-#      defaultZone: http://localhost:8061/eureka
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
