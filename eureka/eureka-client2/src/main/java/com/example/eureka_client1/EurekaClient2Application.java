@@ -1,10 +1,11 @@
 package com.example.eureka_client1;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
@@ -16,21 +17,28 @@ public class EurekaClient2Application {
         SpringApplication.run(EurekaClient2Application.class, args);
     }
 
+    // https://github.com/spring-cloud/spring-cloud-netflix/issues/4380#issuecomment-2511465791
+    // https://stackoverflow.com/a/76920404
+    @Bean("client2Service")
+    @LoadBalanced
+    RestClient.Builder loadBalancedRestClientBuilder() {
+        return RestClient.builder().baseUrl("http://eureka-client-1");
+    }
+
     @Bean
-    RestClient restClient() {
-        return RestClient.create();
+    @Primary
+    RestClient.Builder restClientBuilder() {
+        return RestClient.builder();
     }
 }
 
 @RestController
 class Controller {
 
-    private final RestClient restClient;
-    private final DiscoveryClient  discoveryClient;
+    final RestClient.Builder restClientBuilder;
 
-    public Controller(RestClient restClient, DiscoveryClient discoveryClient) {
-        this.restClient = restClient;
-        this.discoveryClient = discoveryClient;
+    public Controller(@Qualifier("client2Service") RestClient.Builder restClientBuilder) {
+        this.restClientBuilder = restClientBuilder;
     }
 
     @GetMapping("/hello")
@@ -38,14 +46,8 @@ class Controller {
         return "Hello from client 2";
     }
 
-    @GetMapping("/helloa")
+    @GetMapping("/hello-other")
     public String helloa() {
-        ServiceInstance instance =
-                discoveryClient.getInstances("eureka-client-1").getFirst();
-
-        String response =
-                restClient.get().uri(instance.getUri() + "/hello").retrieve().body(String.class);
-
-        return response;
+        return restClientBuilder.build().get().uri("/hello").retrieve().body(String.class);
     }
 }

@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="EurekaClient1Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UnknownPolicyInFreeMode" />
+    <module name="eureka-client1" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.eureka_client1.EurekaClient1Application" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.example.eureka_client1.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
