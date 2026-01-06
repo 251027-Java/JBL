@@ -1,0 +1,40 @@
+input {
+    beats {
+        port => 5044
+    }
+}
+
+output {
+    elasticsearch {
+        host => ["http://elasticsearch:9200"]
+        index => "app-logs-%{+YYYY.MM.dd}"
+    }
+
+    stdout {
+        codec => rubydebug
+    }
+}
+
+filter {
+    if [timestamp] {
+        match => ["timestamp", "ISO8601"]
+        target => "@timestamp"
+        remove_field => ["timestamp"]
+    }
+
+    if [level] {
+        mutate {
+            copy => { "level" => "log_level" }
+        }
+    }
+
+    if [logger_name] {
+        mutate {
+            copy => { "logger_name" => "logger" }
+        }
+    }
+
+    mutate {
+        remove_field => ["host", "agent", "ecs", "input", "log"]
+    }
+}

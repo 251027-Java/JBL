@@ -1,0 +1,14 @@
+services:
+  api:
+    build: .
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./logs:/var/log/app
+    networks:
+      - elk-net
+
+networks:
+  elk-net:
+    external: true
+    name: elk-net

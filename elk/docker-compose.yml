@@ -20,6 +20,26 @@ services:
       timeout: 10s
       retries: 10
 
+  logstash:
+    image: logstash:8.11.0
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    ports:
+      - '5044:5044'
+      - '9600:9600'
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    networks:
+      - elk-net
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -s http://localhost:9600 | grep -q 'host'
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
   kibana:
     image: kibana:8.11.0
     depends_on:
